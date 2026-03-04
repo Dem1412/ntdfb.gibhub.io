@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลองเล่นเกมเช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    
+    <style>
+        @font-face {
+            font-family: 'FC Active';
+            src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        /* เพิ่ม Smooth Scroll ให้การเลื่อนหน้าจอนุ่มนวลขึ้น */
+        html { scroll-behavior: smooth; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'FC Active', sans-serif !important; }
+        body { background-color: #f9f9f9; color: #333; }
+
+        .main-content {
+            flex: 1 0 auto;
+        }
+
+        /* Hero Section - ปรับให้กึ่งกลางหน้าจอมากขึ้น */
+        .hero {
+            padding: 100px 5%;
+            background: #fff;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(35px, 6vw, 45px);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #FFD200;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .hero-btns {
+            margin-top: 35px;
+        }
+
+        .btn-main {
+            padding: 16px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            background: #2ECC71;
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-main:hover {
+            background: #218838;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .hero-img img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 30px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+
+        /* --- ส่วนพื้นที่เกม --- */
+        #game-area {
+            display: none;
+            margin: 40px auto;
+            max-width: 1100px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        #game-area:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: white;
+            padding: 5px 15px;
+        }
+
+        .game-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-expand-game { background: #007bff; color: white; border: none; padding: 8px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-close-game { background: #ff4444; color: white; border: none; padding: 8px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+
+        iframe {
+            width: 100%;
+            height: 650px;
+            border: none;
+            border-radius: 15px;
+            background: #000;
+        }
+
+        #game-area:fullscreen iframe {
+            height: calc(100vh - 60px);
+            border-radius: 0;
+        }
+
+        @media (max-width: 768px) {
+            iframe { height: 400px; }
+            .hero { padding: 60px 5%; text-align: center; }
+            .hero-container { justify-content: center; }
+            .hero-img { order: -1; } /* เอาโลโก้ขึ้นก่อนในมือถือ */
+        }
+    </style>
+    <script src="navbar.js"></script>
+</head>
+<body>
+
+    <div class="main-content">
+        <header class="hero">
+            <div class="hero-container">
+                <div class="hero-text">
+                    <h1>ยินดีต้อนรับสู่... <br><span class="highlight">"โลกแห่งการ เช็ด ปัด จัด ใช้!"</span></h1>
+                    <p style="font-size: 22px; color: #666;">"มาเรียนรู้วิธีดูแลบ้านให้วิบวับ แล้วไปตะลุยด่านในเกมกันเลย!"</p>
+                    <div class="hero-btns">
+                        <button onclick="openGame()" class="btn-main">🎮 เข้าสู่เกม</button>
+                    </div>
+                </div>
+                <div class="hero-img">
+                    <img src="logo.png" alt="Logo">
+                </div>
+            </div>
+        </header>
+
+        <div id="game-area">
+            <div class="game-header">
+                <span id="game-title" style="font-size: 20px; font-weight: bold;">🎮 กำลังเล่นเกม</span>
+                <div class="game-buttons">
+                    <button class="btn-expand-game" id="fs-btn" onclick="toggleFullScreen()">🔳 เต็มหน้าจอ</button>
+                    <button class="btn-close-game" onclick="closeGame()">❌ ปิดเกม</button>
+                </div>
+            </div>
+            <iframe src="game_folder/index.html" id="game-iframe" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openGame() {
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = 'block'; 
+            gameArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closeGame() {
+            const gameArea = document.getElementById('game-area');
+            if (document.fullscreenElement) { document.exitFullscreen(); }
+            gameArea.style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleFullScreen() {
+            const gameArea = document.getElementById('game-area');
+            const btn = document.getElementById('fs-btn');
+            if (!document.fullscreenElement) {
+                if (gameArea.requestFullscreen) { gameArea.requestFullscreen(); }
+                btn.innerHTML = "🔲 ย่อหน้าจอ";
+            } else {
+                if (document.exitFullscreen) { document.exitFullscreen(); }
+                btn.innerHTML = "🔳 เต็มหน้าจอ";
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.getElementById('fs-btn');
+            if (!document.fullscreenElement) btn.innerHTML = "🔳 เต็มหน้าจอ";
+        });
+    </script>
+    <script src="footer.js"></script>
+</body>
+</html>

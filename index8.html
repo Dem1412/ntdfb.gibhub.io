@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เกมเขาวงกตสุดหรรษา | เช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS STYLING SECTION (ENHANCED V3.2) --- */
+        :root {
+            --p-color: #6366f1; 
+            --p-dark: #4338ca; 
+            --s-color: #10b981;
+            --a-color: #f59e0b; 
+            --d-color: #ef4444; 
+            --bg-main: #0f172a;
+            --ui-card: #ffffff; 
+            --text-main: #1e293b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            outline: none; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+        }
+        /* --- แก้ไขส่วนนี้เพื่อให้รองรับ Navbar และ Footer --- */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            /* เปลี่ยนจาก height: 100% เป็น min-height เพื่อให้เลื่อนหน้าจอได้ */
+            min-height: 100vh; 
+            font-family: 'Kanit', sans-serif; 
+            background: #0f172a url('https://www.transparenttextures.com/patterns/cubes.png');
+            /* เอา display: flex; และ align-items: center; ออก */
+            display: block; 
+            overflow-x: hidden; /* ป้องกันการเลื่อนซ้ายขวา */
+            overflow-y: auto;   /* ให้เลื่อนขึ้นลงได้ */
+            color: var(--text-main);
+        }
+
+        #game-wrapper {
+        width: 95%; 
+        max-width: 1200px; 
+        /* ปรับความสูงให้เหมาะสม ไม่ให้ล้นจอจนเกินไป */
+        min-height: 80vh; 
+        margin: 40px auto; /* เว้นระยะห่างจาก Navbar และ Footer */
+        background: #f8fafc; 
+        position: relative; 
+        overflow: hidden;
+        display: flex; 
+        flex-direction: column;
+        transition: all 0.4s ease;
+        border-radius: 24px;
+        border: 12px solid #334155;
+        box-shadow: 0 0 0 20px #1e293b, var(--shadow-xl);
+        z-index: 1; /* ให้อยู่ต่ำกว่า Navbar */
+        }
+
+        /* สำหรับหน้าจอคอมพิวเตอร์ (แนวกว้าง) */
+        /* ปรับแต่งสำหรับมือถือ */
+        @media (max-width: 768px) {
+            #game-wrapper {
+                width: 100%;
+                max-width: 100%;
+                margin: 0; /* มือถือให้ชิดขอบ */
+                border-radius: 0;
+                border: none;
+                min-height: 100vh;
+            }
+        }
+
+        /* แก้ไขเพิ่มเติม: ป้องกันตัวหนังสือ title ล้น */
+        .title-gradient {
+            font-size: clamp(2rem, 8vw, 2.8rem); /* ปรับขนาดฟอนต์ตามหน้าจอ */
+            font-weight: 600; 
+            margin: 0;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            background-clip: text; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+            body {
+                background: #0f172a url('https://www.transparenttextures.com/patterns/cubes.png');
+            }
+
+        /* เมื่อหน้าจอเล็กลง หรือทรงแนวตั้ง (Mobile/Tablet Portrait) */
+        @media (max-width: 768px) {
+            #game-wrapper {
+                max-width: 450px; /* บีบให้เป็นทรงมือถือ */
+                height: 100vh;
+                max-height: 100%;
+                border-radius: 0;
+                border: none;
+            }
+        }
+
+        .screen {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; z-index: 10; padding: 30px;
+            background: #f8fafc;
+        }
+
+        .screen.active { 
+            display: flex; 
+            animation: screenSlide 0.5s ease-out forwards; 
+        }
+
+        @keyframes screenSlide { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* UI COMPONENTS */
+        /* UI COMPONENTS */
+        .title-gradient {
+            font-size: 2.8rem; 
+            font-weight: 600; 
+            margin: 0;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            
+            /* เพิ่มบรรทัดนี้เข้าไปครับ */
+            background-clip: text; 
+            
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+                
+
+        .btn {
+            width: 100%; padding: 18px; margin: 12px 0; border: none; border-radius: 20px;
+            font-family: 'Kanit'; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            transition: all 0.2s; position: relative;
+        }
+
+        .btn-p { 
+            background: linear-gradient(135deg, var(--p-color), var(--p-dark)); 
+            color: white; 
+            box-shadow: 0 8px 15px rgba(99, 102, 241, 0.3); 
+        }
+
+        .btn-p:active { transform: scale(0.96); }
+
+        .btn-s { 
+            background: white; color: var(--text-main); 
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-s:hover { background: #f1f5f9; }
+
+        .hud-bar {
+            width: 100%; height: 80px; display: flex; justify-content: space-between;
+            align-items: center; padding: 0 25px; background: white; 
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        #canvas-container {
+            flex-grow: 1; position: relative; display: flex; 
+            align-items: center; justify-content: center;
+            background: #f1f5f9; padding: 15px;
+        }
+
+        canvas { 
+            background: white; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            max-width: 100%;
+        }
+
+        .controls-grid {
+            padding: 25px; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px; 
+            background: white; 
+            border-top: 1px solid #eee;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.03);
+        }
+
+        .btn-control {
+            margin: 0 !important; 
+            height: 55px !important; 
+            border-radius: 15px !important;
+            background: #f8fafc !important;
+            font-size: 1.5rem !important;
+        }
+
+        .overlay {
+            position: absolute; inset: 0; background: rgba(15, 23, 42, 0.7);
+            z-index: 100; display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px); padding: 25px;
+        }
+
+        .modal {
+            background: white; border-radius: 30px; width: 100%; max-width: 400px; padding: 30px;
+            text-align: center; box-shadow: var(--shadow-xl);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* จัดระเบียบหน้า Home ให้แบ่งซ้าย-ขวา */
+.home-content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-grow: 1; /* ให้ขยายเต็มพื้นที่ที่เหลือ */
+    padding: 20px 0;
+}
+
+.home-text-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.home-buttons {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+/* ตั้งค่ารูปภาพให้อยู่ขวาและปรับขนาดให้พอดี */
+.hero-img {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-img img {
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+    /* เพิ่ม Animation เล็กน้อยให้ดูมีชีวิตชีวา */
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ปรับปรุงให้รองรับมือถือ (สลับกลับมาวางแนวตั้ง) */
+@media (max-width: 768px) {
+    .home-content-wrapper {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-img {
+        order: -1; /* เอารูปขึ้นไปไว้ด้านบนบนมือถือ */
+        margin-bottom: 20px;
+    }
+    
+    .hero-img img {
+        max-height: 200px;
+    }
+}
+
+        @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .cloud {
+            position: absolute; background: white; opacity: 0.4; border-radius: 50px;
+            pointer-events: none; z-index: 1;
+        }
+    </style>
+    <script src="navbar.js"></script>
+</head>
+<body>
+
+<div id="game-wrapper">
+    <div class="cloud" style="width: 100px; height: 30px; top: 10%; animation-duration: 25s;"></div>
+    <div class="cloud" style="width: 150px; height: 40px; top: 25%; animation-duration: 35s; opacity: 0.2;"></div>
+
+    <div id="screen-splash" class="screen active" style="justify-content: center; text-align: center;">
+        <div style="font-size: 120px; margin-bottom: 20px; animation: pulse 2s infinite;">🧼</div>
+        <h1 class="title-gradient">เกมเช็ด ปัด จัด ใช้ ให้ถูกวิธี</h1>
+        <p style="color: #64748b; margin-bottom: 50px;">VERSION 3.0 labyrinth</p>
+        <div style="width: 200px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin: 0 auto;">
+            <div id="loading-bar" style="width: 0%; height: 100%; background: var(--p-color);"></div>
+        </div>
+    </div>
+
+    <div id="screen-home" class="screen">
+    <div class="home-content-wrapper">
+        <div class="home-text-section">
+            <div style="margin-top: 20px;">
+                <h1 style="color: var(--p-color);">หน้าหลักของเกมเขาวงกตสุดหรรษา</h1>
+                <p class="subtitle">สามารถเลือกเล่นได้เลยหรือว่าจะปิดเสียงก่อนก็ได้น้า</p>
+            </div>
+            
+            <div class="home-buttons">
+                <button class="btn btn-p" onclick="navTo('screen-level')"><span>▶️</span> เริ่มเล่นเกม</button>
+                <button class="btn btn-s" onclick="openOverlay('settings-overlay')"><span>⚙️</span> ตั้งค่าระบบ</button>
+                <button class="btn btn-s" onclick="openOverlay('stats-overlay')"><span>📊</span> สถิติการเล่น</button>
+            </div>
+        </div>
+
+        <div class="hero-img">
+            <img src="logo.png" alt="Banner"> 
+        </div>
+    </div>
+    <p style="font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: auto;">© 2024 CLEANING AI SYSTEM</p>
+</div>
+
+    <div id="screen-level" class="screen">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <button class="btn btn-s" style="width: 60px; padding: 10px;" onclick="navTo('screen-home')">🔙</button>
+            <h1 style="margin: 0; font-size: 1.8rem;">เลือกด่าน</h1>
+        </div>
+        <div id="level-list-scroll" style="flex-grow: 1; overflow-y: auto; padding-bottom: 20px;">
+            </div>
+    </div>
+
+    <div id="screen-game" class="screen" style="padding: 0;">
+        <div class="hud-bar">
+            <div class="hud-item">
+                <span class="hud-label">ภารกิจ</span>
+                <span id="hud-mission" class="hud-val">...</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">เวลา</span>
+                <span id="hud-timer" class="hud-val">00:00</span>
+            </div>
+            <div class="hud-item">
+                <button onclick="openOverlay('pause-overlay')" style="border:none; background:#f1f5f9; padding: 10px; border-radius: 12px; cursor:pointer;">⏸️</button>
+            </div>
+        </div>
+        <div id="canvas-container">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <div style="padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: white; border-top: 1px solid #eee;">
+            <div></div><button class="btn btn-s" style="margin:0; height: 60px;" onclick="handleMove('up')">🔼</button><div></div>
+            <button class="btn btn-s" style="margin:0; height: 60px;" onclick="handleMove('left')">◀️</button>
+            <button class="btn btn-s" style="margin:0; height: 60px; font-size: 0.8rem;" onclick="resetCurrentLevel()">🔄 RESET</button>
+            <button class="btn btn-s" style="margin:0; height: 60px;" onclick="handleMove('right')">▶️</button>
+            <div></div><button class="btn btn-s" style="margin:0; height: 60px;" onclick="handleMove('down')">🔽</button><div></div>
+        </div>
+    </div>
+
+    <div id="screen-result" class="screen" style="text-align: center; justify-content: center;">
+        <h1 id="res-title" style="color: var(--s-color); font-size: 2.5rem;">สุดยอด!</h1>
+        <div id="res-stars" style="font-size: 5rem; margin: 20px 0;">⭐⭐⭐</div>
+        <div style="background: white; padding: 20px; border-radius: 20px; margin-bottom: 30px;">
+            <p id="res-time-text" style="font-size: 1.2rem; margin: 5px 0;"></p>
+            <p id="res-best-text" style="font-size: 0.9rem; color: #64748b;"></p>
+        </div>
+        <button class="btn btn-p" onclick="navTo('screen-level')">ไปด่านถัดไป ➡️</button>
+        <button class="btn btn-s" onclick="navTo('screen-home')">🏠 กลับหน้าหลัก</button>
+    </div>
+
+    <div id="settings-overlay" class="overlay">
+        <div class="modal">
+            <h2>ตั้งค่าระบบ</h2>
+            <div class="control-row" style="display:flex; justify-content:space-between; margin:15px 0;">
+                <span>ดนตรีประกอบ 🎵</span>
+                <input type="checkbox" id="check-music" checked onchange="saveSettings()">
+            </div>
+            <div class="control-row" style="display:flex; justify-content:space-between; margin:15px 0;">
+                <span>เอฟเฟกต์เสียง 🔊</span>
+                <input type="checkbox" id="check-sfx" checked onchange="saveSettings()">
+            </div>
+            <div class="control-row" style="flex-direction: column; align-items: flex-start; gap: 10px; display:flex;">
+                <span>ระดับความดัง</span>
+                <input type="range" id="vol-range" min="0" max="1" step="0.1" value="0.5" style="width: 100%;" onchange="saveSettings()">
+            </div>
+            <button class="btn btn-p" style="margin-top: 20px;" onclick="closeOverlays()">ตกลง</button>
+        </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay">
+        <div class="modal">
+            <h2>พักเกม</h2>
+            <button class="btn btn-p" onclick="closeOverlays(); resumeGame();">▶️ เล่นต่อ</button>
+            <button class="btn btn-s" onclick="closeOverlays(); resetCurrentLevel();">🔄 เริ่มด่านนี้ใหม่</button>
+            <button class="btn btn-s" style="color: var(--d-color);" onclick="closeOverlays(); navTo('screen-level');">🚪 ออกจากด่าน</button>
+        </div>
+    </div>
+
+    <div id="stats-overlay" class="overlay">
+        <div class="modal">
+            <h2>สถิติการเล่นของคุณ</h2>
+            <div id="stats-content" style="text-align: left; margin: 20px 0; line-height: 2;">
+                </div>
+            <button class="btn btn-p" onclick="closeOverlays()">ปิด</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* JAVASCRIPT ENGINE คงเดิมทั้งหมดตามที่ระบุ ห้ามแก้ */
+const CONFIG = {
+    steps: [
+        { id: 2, label: "🧽 เช็ดคราบ", color: "#22d3ee", sfx: 'wipe' },
+        { id: 3, label: "🧹 ปัดฝุ่น", color: "#fbbf24", sfx: 'sweep' },
+        { id: 4, label: "🧺 จัดของ", color: "#4ade80", sfx: 'organize' },
+        { id: 5, label: "🔑 ใช้งาน", color: "#f472b6", sfx: 'key' }
+    ],
+    levels: [
+        { id: 1, name: "ห้องนอนเจ้าหญิง", size: 11, targetTime: 15, locked: false },
+        { id: 2, name: "ห้องครัวเชฟบอย", size: 15, targetTime: 30, locked: false },
+        { id: 3, name: "ห้องนั่งเล่นสุดรก", size: 19, targetTime: 45, locked: false },
+        { id: 4, name: "ออฟฟิศมหาเศรษฐี", size: 23, targetTime: 60, locked: false },
+        { id: 5, name: "สวนหลังบ้านสยอง", size: 27, targetTime: 90, locked: false }
+    ]
+};
+
+let gameState = {
+    activeScreen: 'splash',
+    currentLevel: null,
+    maze: [],
+    player: { x: 0, y: 0, realX: 0, realY: 0 },
+    currentStep: 0,
+    startTime: 0,
+    timer: 0,
+    isPaused: false,
+    settings: { music: true, sfx: true, volume: 0.5 },
+    stats: { totalGames: 0, totalStars: 0, playTime: 0 },
+    levelData: {}
+};
+
+const AudioEngine = {
+    ctx: null,
+    masterBus: null,
+    musicBus: null,
+    bgmNode: null,
+
+    init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterBus = this.ctx.createGain();
+        this.musicBus = this.ctx.createGain();
+        this.masterBus.connect(this.ctx.destination);
+        this.musicBus.connect(this.masterBus);
+        this.updateVolumes();
+        this.startBGM();
+    },
+
+    updateVolumes() {
+        if (!this.masterBus) return;
+        this.masterBus.gain.value = gameState.settings.volume;
+        this.musicBus.gain.value = gameState.settings.music ? 0.4 : 0;
+    },
+
+    startBGM() {
+        const playBeat = () => {
+            if (!gameState.settings.music) { setTimeout(playBeat, 1000); return; }
+            const now = this.ctx.currentTime;
+            const seq = [261.63, 329.63, 392.00, 523.25];
+            seq.forEach((freq, i) => {
+                const osc = this.ctx.createOscillator();
+                const g = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + i * 0.8);
+                g.gain.setValueAtTime(0, now + i * 0.8);
+                g.gain.linearRampToValueAtTime(0.1, now + i * 0.8 + 0.1);
+                g.gain.linearRampToValueAtTime(0, now + i * 0.8 + 0.7);
+                osc.connect(g); g.connect(this.musicBus);
+                osc.start(now + i * 0.8); osc.stop(now + i * 0.8 + 0.8);
+            });
+            setTimeout(playBeat, 3200);
+        };
+        playBeat();
+    },
+
+    playSFX(type) {
+        if (!gameState.settings.sfx || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.connect(g); g.connect(this.masterBus);
+        
+        const now = this.ctx.currentTime;
+        switch(type) {
+            case 'move':
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+                g.gain.setValueAtTime(0.05, now);
+                g.gain.linearRampToValueAtTime(0, now + 0.1);
+                break;
+            case 'wipe':
+                this.playNoise(0.1, 0.15);
+                return;
+            case 'collect':
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.2);
+                g.gain.setValueAtTime(0.1, now);
+                g.gain.linearRampToValueAtTime(0, now + 0.2);
+                break;
+            case 'win':
+                this.playChime();
+                return;
+        }
+        osc.start(); osc.stop(now + 0.3);
+    },
+
+    playNoise(dur, vol) {
+        const bufSize = this.ctx.sampleRate * dur;
+        const buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const g = this.ctx.createGain();
+        g.gain.setValueAtTime(vol, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + dur);
+        noise.connect(g); g.connect(this.masterBus);
+        noise.start();
+    },
+
+    playChime() {
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.1);
+            g.gain.setValueAtTime(0.1, this.ctx.currentTime + i * 0.1);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i * 0.1 + 0.5);
+            osc.connect(g); g.connect(this.masterBus);
+            osc.start(this.ctx.currentTime + i * 0.1); osc.stop(this.ctx.currentTime + i * 0.1 + 0.5);
+        });
+    }
+};
+
+const MazeEngine = {
+    generate(size) {
+        let grid = Array(size).fill().map(() => Array(size).fill(1));
+        const stack = [{x: 1, y: 1}];
+        grid[1][1] = 0;
+
+        while(stack.length > 0) {
+            const curr = stack[stack.length - 1];
+            const dirs = [[0,-2],[0,2],[-2,0],[2,0]].sort(() => Math.random() - 0.5);
+            let found = false;
+
+            for(const [dx, dy] of dirs) {
+                const nx = curr.x + dx, ny = curr.y + dy;
+                if(nx > 0 && nx < size-1 && ny > 0 && ny < size-1 && grid[ny][nx] === 1) {
+                    grid[curr.y + dy/2][curr.x + dx/2] = 0;
+                    grid[ny][nx] = 0;
+                    stack.push({x: nx, y: ny});
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) stack.pop();
+        }
+
+        const paths = [];
+        for(let y=1; y<size-1; y++) for(let x=1; x<size-1; x++) if(grid[y][x] === 0 && (x!==1 || y!==1)) paths.push({x,y});
+        paths.sort(() => Math.random() - 0.5);
+        
+        CONFIG.steps.forEach((step, idx) => {
+            const p = paths.pop();
+            grid[p.y][p.x] = step.id;
+        });
+
+        grid[size-2][size-2] = 9;
+        return grid;
+    }
+};
+
+const Renderer = {
+    canvas: null, ctx: null, tileSize: 0,
+    
+    init() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+    },
+
+    render() {
+        if(!gameState.currentLevel || gameState.activeScreen !== 'game') return;
+        const ctx = this.ctx;
+        const size = gameState.currentLevel.size;
+        ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+
+        for(let y=0; y<size; y++) {
+            for(let x=0; x<size; x++) {
+                const val = gameState.maze[y][x];
+                const px = x * this.tileSize;
+                const py = y * this.tileSize;
+
+                if(val === 1) {
+                    ctx.fillStyle = "#cbd5e1";
+                    this.drawRoundedRect(px+2, py+2, this.tileSize-4, this.tileSize-4, 8);
+                } else if(val === 9) {
+                    ctx.fillStyle = gameState.currentStep >= 4 ? "#10b981" : "#f43f5e";
+                    ctx.globalAlpha = 0.2;
+                    ctx.fillRect(px, py, this.tileSize, this.tileSize);
+                    ctx.globalAlpha = 1;
+                    ctx.font = `${this.tileSize*0.4}px Kanit`;
+                    ctx.textAlign = "center";
+                    ctx.fillText("EXIT", px+this.tileSize/2, py+this.tileSize/1.5);
+                } else if(val >= 2 && val <= 5) {
+                    ctx.font = `${this.tileSize*0.7}px Arial`;
+                    ctx.textAlign = "center";
+                    ctx.fillText(CONFIG.steps[val-2].label.split(' ')[0], px+this.tileSize/2, py+this.tileSize/1.3);
+                }
+            }
+        }
+
+        gameState.player.realX += (gameState.player.x - gameState.player.realX) * 0.2;
+        gameState.player.realY += (gameState.player.y - gameState.player.realY) * 0.2;
+
+        ctx.fillStyle = "#6366f1";
+        ctx.shadowBlur = 15; ctx.shadowColor = "rgba(99,102,241,0.5)";
+        ctx.beginPath();
+        ctx.arc(gameState.player.realX*this.tileSize + this.tileSize/2, gameState.player.realY*this.tileSize + this.tileSize/2, this.tileSize/3, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(() => this.render());
+    },
+
+    drawRoundedRect(x, y, w, h, r) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x+r, y);
+        this.ctx.arcTo(x+w, y, x+w, y+h, r);
+        this.ctx.arcTo(x+w, y+h, x, y+h, r);
+        this.ctx.arcTo(x, y+h, x, y, r);
+        this.ctx.arcTo(x, y, x+w, y, r);
+        this.ctx.fill();
+    }
+};
+
+function navTo(screenId) {
+    gameState.activeScreen = screenId.replace('screen-','');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    
+    if(screenId === 'screen-level') renderLevelList();
+    if(screenId === 'screen-home') AudioEngine.init();
+    if(screenId === 'screen-game') {
+        gameState.isPaused = false;
+        Renderer.init();
+        Renderer.render();
+    }
+}
+
+function renderLevelList() {
+    const container = document.getElementById('level-list-scroll');
+    container.innerHTML = '';
+    CONFIG.levels.forEach(lvl => {
+        const data = gameState.levelData[lvl.id] || { stars: 0, bestTime: null };
+        const div = document.createElement('div');
+        div.className = 'btn btn-s';
+        div.style.justifyContent = 'space-between';
+        div.innerHTML = `
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span style="font-size:1.5rem;">🏠</span>
+                <div style="text-align:left;">
+                    <div style="font-weight:600;">${lvl.name}</div>
+                    <small style="color:#94a3b8;">เป้าหมาย: ${lvl.targetTime}s</small>
+                </div>
+            </div>
+            <div style="color:var(--a-color);">${'⭐'.repeat(data.stars)}${'☆'.repeat(3-data.stars)}</div>
+        `;
+        div.onclick = () => initLevel(lvl.id);
+        container.appendChild(div);
+    });
+}
+
+function initLevel(id) {
+    const lvl = CONFIG.levels.find(l => l.id === id);
+    gameState.currentLevel = lvl;
+    gameState.maze = MazeEngine.generate(lvl.size);
+    gameState.player = { x: 1, y: 1, realX: 1, realY: 1 };
+    gameState.currentStep = 0;
+    gameState.startTime = Date.now();
+    gameState.isPaused = false;
+    
+    const container = document.getElementById('canvas-container');
+    const cSize = Math.min(container.clientWidth, container.clientHeight) - 40;
+    const canvas = document.getElementById('gameCanvas');
+    canvas.width = canvas.height = cSize;
+    Renderer.tileSize = cSize / lvl.size;
+    
+    navTo('screen-game');
+    startTimer();
+}
+
+function handleMove(dir) {
+    if(gameState.isPaused || gameState.activeScreen !== 'game') return;
+    let nx = gameState.player.x, ny = gameState.player.y;
+    if(dir === 'up') ny--; else if(dir === 'down') ny++;
+    else if(dir === 'left') nx--; else if(dir === 'right') nx++;
+
+    if(gameState.maze[ny] && gameState.maze[ny][nx] !== 1) {
+        AudioEngine.playSFX('move');
+        const cell = gameState.maze[ny][nx];
+        
+        if(cell >= 2 && cell <= 5) {
+            if(cell === gameState.currentStep + 2) {
+                gameState.maze[ny][nx] = 0;
+                gameState.currentStep++;
+                AudioEngine.playSFX('collect');
+            }
+        }
+        
+        if(cell === 9 && gameState.currentStep >= 4) {
+            winGame();
+        }
+
+        gameState.player.x = nx;
+        gameState.player.y = ny;
+    }
+}
+
+function startTimer() {
+    const timerEl = document.getElementById('hud-timer');
+    const missionEl = document.getElementById('hud-mission');
+    
+    const loop = () => {
+        if(gameState.activeScreen !== 'game') return;
+        if(!gameState.isPaused) {
+            const now = Date.now();
+            gameState.timer = Math.floor((now - gameState.startTime) / 1000);
+            const m = Math.floor(gameState.timer/60).toString().padStart(2,'0');
+            const s = (gameState.timer%60).toString().padStart(2,'0');
+            timerEl.innerText = `${m}:${s}`;
+            
+            missionEl.innerText = gameState.currentStep < 4 ? 
+                CONFIG.steps[gameState.currentStep].label : "✨ ไปทางออก!";
+        }
+        setTimeout(loop, 1000);
+    };
+    loop();
+}
+
+function winGame() {
+    AudioEngine.playSFX('win');
+    const time = gameState.timer;
+    const target = gameState.currentLevel.targetTime;
+    
+    let stars = 1;
+    if(time <= target) stars = 3;
+    else if(time <= target * 1.5) stars = 2;
+
+    const prevData = gameState.levelData[gameState.currentLevel.id] || { stars: 0, bestTime: 999 };
+    gameState.levelData[gameState.currentLevel.id] = {
+        stars: Math.max(prevData.stars, stars),
+        bestTime: Math.min(prevData.bestTime, time)
+    };
+    
+    saveToStorage();
+    
+    document.getElementById('res-stars').innerText = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+    document.getElementById('res-time-text').innerText = `เวลาที่ทำได้: ${time} วินาที`;
+    document.getElementById('res-best-text').innerText = `สถิติเดิม: ${prevData.bestTime === 999 ? '-' : prevData.bestTime + 's'}`;
+    navTo('screen-result');
+}
+
+function saveToStorage() {
+    localStorage.setItem('clean_master_data', JSON.stringify({
+        levelData: gameState.levelData,
+        settings: gameState.settings,
+        stats: gameState.stats
+    }));
+}
+
+function loadFromStorage() {
+    const data = localStorage.getItem('clean_master_data');
+    if(data) {
+        const parsed = JSON.parse(data);
+        gameState.levelData = parsed.levelData || {};
+        gameState.settings = parsed.settings || gameState.settings;
+        gameState.stats = parsed.stats || gameState.stats;
+        
+        document.getElementById('check-music').checked = gameState.settings.music;
+        document.getElementById('check-sfx').checked = gameState.settings.sfx;
+        document.getElementById('vol-range').value = gameState.settings.volume;
+    }
+}
+
+function saveSettings() {
+    gameState.settings.music = document.getElementById('check-music').checked;
+    gameState.settings.sfx = document.getElementById('check-sfx').checked;
+    gameState.settings.volume = parseFloat(document.getElementById('vol-range').value);
+    AudioEngine.updateVolumes();
+    saveToStorage();
+}
+
+function openOverlay(id) {
+    document.getElementById(id).style.display = 'flex';
+    gameState.isPaused = true;
+    if(id === 'stats-overlay') updateStatsContent();
+}
+
+function closeOverlays() {
+    document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
+    gameState.isPaused = false;
+}
+
+function updateStatsContent() {
+    let totalS = 0;
+    Object.values(gameState.levelData).forEach(d => totalS += d.stars);
+    document.getElementById('stats-content').innerHTML = `
+        <div>🌟 ดาวทั้งหมดที่เก็บได้: ${totalS}</div>
+        <div>🏆 ความสำเร็จสูงสุด: ${totalS >= 10 ? 'มือโปรความสะอาด' : 'นักทำความสะอาดฝึกหัด'}</div>
+    `;
+}
+
+function resetCurrentLevel() {
+    closeOverlays();
+    initLevel(gameState.currentLevel.id);
+}
+
+window.onload = () => {
+    loadFromStorage();
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 5;
+        document.getElementById('loading-bar').style.width = progress + '%';
+        if(progress >= 100) {
+            clearInterval(interval);
+            navTo('screen-home');
+        }
+    }, 50);
+};
+
+window.addEventListener('keydown', e => {
+    if(e.key.startsWith('Arrow')) {
+        e.preventDefault();
+        handleMove(e.key.replace('Arrow','').toLowerCase());
+    }
+});
+</script>
+<script src="footer.js"></script>
+</body>
+</html>

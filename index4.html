@@ -1,0 +1,135 @@
+<!DOCTYPE html> 
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ดาวน์โหลดเกมเช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    
+    <meta name="description" content="ดาวน์โหลดเกมบ้านขนมคุณนายติ๋ม สนุกไปกับการเรียนรู้และทำขนมไทย">
+    <meta property="og:title" content="ดาวน์โหลดเกม - บ้านขนมคุณนายติ๋ม">
+    <meta property="og:image" content="https://img5.pic.in.th/file/secure-sv1/BGWebDownloadcb3551cd896c618a.jpg">
+
+    <style>
+        @font-face { 
+            font-family: 'FC Active'; 
+            src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype'); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'FC Active', sans-serif !important; }
+        
+        body { background-color: #f4f4f4; }
+
+        /* ส่วนภาพพื้นหลัง */
+        .main-content {
+            min-height: 90vh; 
+            position: relative;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
+                        url('https://img5.pic.in.th/file/secure-sv1/BGWebDownloadcb3551cd896c618a.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex; 
+            align-items: flex-end; /* จัดให้อยู่ด้านล่าง */
+            padding: 80px 60px;
+        }
+
+        /* DOWNLOAD SECTION */
+        .download-section {
+            color: white;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.4); /* เพิ่มพื้นหลังจางๆ ให้ข้อความอ่านง่ายขึ้น */
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .download-text {
+            font-size: clamp(32px, 5vw, 52px); /* ขนาดฟอนต์ยืดหยุ่นตามหน้าจอ */
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #090979;
+            color: white;
+            padding: 15px 45px;
+            font-size: 24px;
+            text-decoration: none;
+            border-radius: 50px; /* ปรับให้โค้งมนดูทันสมัย */
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        /* ส่วนข้อมูลเพิ่มเติม (System Req / How to install) */
+        .info-section {
+            background: white;
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            max-width: 400px;
+            text-align: left;
+            border-left: 4px solid #090979;
+            padding-left: 20px;
+        }
+
+        .info-card h3 { color: #090979; margin-bottom: 10px; }
+        .info-card p { color: #555; line-height: 1.6; }
+
+        /* ปรับแต่งสำหรับมือถือ */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 20px;
+                align-items: center; /* จัดกลางในมือถือ */
+                justify-content: center;
+            }
+            .download-section {
+                text-align: center;
+            }
+            .info-section {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <script src="navbar.js"></script>
+    </head>
+<body>
+
+    <div class="main-content">
+        <div class="download-section">
+            <div class="download-text">ดาวน์โหลดเกม</div>
+            <p style="margin-bottom: 20px; font-size: 1.2rem;">สามารถดาวน์โหลดเกมทันทีได้เลย</p>
+            <a href="https://drive.google.com/uc?export=download&id=1kySEY2vczqJSAAc_-UnsOF7j7PwSW95K" class="download-btn">ดาวน์โหลดเกม (Windows)</a>
+        </div>
+    </div>
+
+    <section class="info-section">
+        <div class="info-card">
+            <h3>ความต้องการระบบ</h3>
+            <p>• ระบบปฏิบัติการ: Windows 10/11 (64-bit)<br>
+               • พื้นที่ว่าง: 500 MB ขึ้นไป<br>
+               • แรม: 4 GB RAM</p>
+        </div>
+        <div class="info-card">
+            <h3>วิธีติดตั้ง</h3>
+            <p>1. กดปุ่มดาวน์โหลดด้านบน<br>
+               2. แตกไฟล์ .zip ที่ได้รับ<br>
+               3. ดับเบิลคลิกที่ไฟล์ .exe เพื่อเข้าเล่นเกมได้ทันที</p>
+        </div>
+    </section>
+    <script src="footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เว็ปไซต์เพื่อการศึกษา เรื่อง เช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    <style>
+        /* ฟอนต์เดิมของคุณ */
+        @font-face {
+            font-family: 'FC Active';
+            src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype');
+        }
+
+        /* เพิ่ม Smooth Scroll ให้การเลื่อนหน้าจอนุ่มนวลขึ้น */
+        html { scroll-behavior: smooth; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'FC Active', sans-serif !important; }
+        body { background-color: #f9f9f9; color: #333; }
+        
+        /* สไตล์ส่วนหัวเดิมของคุณ */
+        .hero { padding: 50px 5%; background: #fff; }
+        .hero-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+        }
+        .hero-text { flex: 1; min-width: 300px; }
+        .hero-text h1 { font-size: 40px; line-height: 1.2; }
+        .highlight { color: #FFC107; text-shadow: 1px 1px 1px #000; }
+        .hero-btns { margin-top: 25px; display: flex; gap: 15px; }
+        .btn-main { background: #2ECC71; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; border:none; font-size: 20px; cursor: pointer; }
+        .btn-sub { background: #FFB300; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-size: 20px; }
+        .btn-main:hover {
+            background: #29d14e;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        .btn-sub:hover {
+            background: #f0ad12;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* --- ส่วนที่เพิ่ม: ตัวการ์ตูนเคลื่อนไหวตรงกลาง --- */
+        .hero-character {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 200px;
+        }
+        .animated-bot {
+            width: 180px; /* ปรับขนาดตัวการ์ตูนได้ที่นี่ */
+            height: auto;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        /* -------------------------------------- */
+
+        .hero-img { flex: 1; display: flex; justify-content: flex-end; min-width: 300px; }
+        .hero-img img { width: 100%; max-width: 500px; border-radius: 20px; }
+
+        /* ส่วนเลือกหัวข้อ */
+        .category-section { padding: 50px 5% 20px 5%; text-align: center; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        
+        /* กล่องเลือกหัวข้อ */
+        .cat-item { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; border: 2px solid transparent;}
+        
+        /* สไตล์เมื่อเอาเมาส์ไปชี้กล่องเลือก */
+        .cat-item:hover { transform: translateY(-5px); background: #fefcf0; border-color: #ffe680; }
+        
+        /* สไตล์เมื่อกล่องถูกเลือก (แสดงเส้นขอบ) */
+        .cat-item.active { border-color: #ffe680; background: #fefcf0; box-shadow: 0 4px 20px rgba(0,0,0,0.15);}
+
+        /* ส่วนแสดงเนื้อหา */
+        .content-display-section { 
+            padding: 20px 5% 50px 5%; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            min-height: 400px; 
+        }
+        
+        /* สไตล์เริ่มต้นของแต่ละเนื้อหา (ซ่อนอยู่) */
+        .content-panel { display: none; background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        
+        /* สไตล์เมื่อเนื้อหาถูกเลือกให้แสดง */
+        .content-panel.active { display: block; animation: fadeIn 0.5s ease; }
+
+        /* ข้อความแจ้งเตือนตอนยังไม่ได้เลือก */
+        #placeholder-text { text-align: center; padding: 40px; border: 2px dashed #ccc; border-radius: 20px; color: #888; background: #fff; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* สไตล์หัวข้อเนื้อหา (ตัวเลขในสี่เหลี่ยม) */
+        .content-number { background-color: #ffe680; color: #333; font-size: 30px; font-weight: bold; width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; border-radius: 15px; margin-right: 15px; margin-bottom: 20px;}
+        .content-panel h2 { display: inline; font-size: 32px; vertical-align: middle;}
+
+        /* สไตล์รายการเนื้อหา */
+        .content-list { list-style: none; margin-top: 15px;}
+        .content-list li { font-size: 20px; line-height: 1.6; margin-bottom: 15px; display: flex; align-items: start;}
+        
+        /* สไตล์ไอคอนหน้าข้อความเนื้อหา */
+        .content-icon { font-size: 24px; margin-right: 15px; margin-top: 3px; min-width: 30px; text-align: center; color: #FFD200; }
+        
+        /* สไตล์ไอคอนในตารางเนื้อหาข้อ 2 */
+        .device-info { border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 10px;}
+        .device-name { font-weight: bold; font-size: 22px; color: #28a745; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;}
+        .device-icon { font-size: 28px;}
+
+        /* --- เพิ่มสไตล์ปุ่ม ย้อนกลับ - ไปต่อ --- */
+        .navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-prev {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-prev:hover { background-color: #dee2e6; }
+
+        .btn-next {
+            background-color: #FFD200;
+            color: #333;
+            padding: 10px 25px;
+            border-radius: 10px;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 0px #e0b800;
+            transition: 0.2s;
+        }
+
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 0px #e0b800; }
+        .btn-next:active { transform: translateY(2px); box-shadow: 0 0px 0px #e0b800; }
+
+        /* --- ส่วนที่เพิ่มเพื่อแก้ปัญหาเวลาย่อหน้าจอ (Responsive Adjustment) --- */
+
+/* 1. จัดการส่วนหัว (Hero Section) เมื่อจอแคบลง */
+@media (max-width: 1100px) {
+    .hero-container {
+        flex-direction: column; /* เปลี่ยนจากเรียงข้างเป็นเรียงลง */
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-text {
+        min-width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .hero-btns {
+        justify-content: center; /* จัดปุ่มให้อยู่กลาง */
+    }
+
+    .hero-character {
+        order: -1; /* เอาหุ่นยนต์ขึ้นไปไว้บนสุด */
+        margin-bottom: 20px;
+    }
+
+    .hero-img {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .hero-img img {
+        max-width: 80%; /* ย่อรูปโลโก้ขวาลงเล็กน้อย */
+    }
+}
+
+/* 2. จัดการตัวหนังสือและปุ่มในหน้าจอมือถือ */
+@media (max-width: 600px) {
+    .hero-text h1 {
+        font-size: 28px; /* ลดขนาดหัวข้อ */
+    }
+    
+    .hero-btns {
+        flex-direction: column; /* ปุ่มเรียงลำดับลงมา */
+        gap: 10px;
+    }
+
+    .btn-main, .btn-sub {
+        font-size: 18px;
+        padding: 10px 20px;
+        width: 100%; /* ปุ่มกว้างเต็มจอเพื่อให้กดง่าย */
+    }
+
+    /* ปรับ Grid ของหมวดหมู่ (กล่องสีขาวด้านล่าง) */
+    .category-grid {
+        grid-template-columns: 1fr; /* ให้แสดงแถวละ 1 กล่อง */
+        padding: 0 10px;
+    }
+    
+    .cat-item {
+        padding: 20px;
+    }
+}
+
+/* 3. ปรับแต่งเนื้อหาภายใน (Content Panel) ให้ไม่ล้นขอบ */
+@media (max-width: 480px) {
+    .content-panel {
+        padding: 20px 15px;
+    }
+    
+    .content-panel h2 {
+        font-size: 20px;
+        display: block; /* ให้หัวข้อขึ้นบรรทัดใหม่จากตัวเลข */
+        margin-top: 10px;
+    }
+
+    .content-list li {
+        font-size: 17px;
+    }
+}
+/* --- ส่วนที่เพิ่มเพื่อปรับลำดับเฉพาะตอนย่อหน้าจอ (Responsive Order) --- */
+@media (max-width: 1100px) {
+    .hero-container {
+        display: flex;
+        flex-direction: column !important; /* สั่งให้เรียงลงมาเป็นแนวตั้ง */
+        align-items: center;
+        text-align: center;
+    }
+
+    /* ลำดับที่ 1: ข้อความ (ยินดีต้อนรับ...) */
+    .hero-text {
+        order: 1; 
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* ลำดับที่ 2: ตัวการ์ตูนหุ่นยนต์ */
+    .hero-character {
+        order: 2;
+        margin-bottom: 20px;
+    }
+
+    /* ลำดับที่ 3: รูปภาพประกอบ (เช็ด ปัด จัด ใช้) */
+    .hero-img {
+        order: 3;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .hero-img img {
+        max-width: 80%; /* ย่อขนาดรูปภาพลงหน่อยเพื่อให้พอดีจอ */
+        height: auto;
+    }
+
+    /* ปรับปุ่มให้เรียงสวยๆ */
+    .hero-btns {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+    </style>
+    <script src="navbar.js"></script>
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>ยินดีต้อนรับสู่... <br><span class="highlight">"โลกแห่งการ เช็ด ปัด จัด ใช้!"</span></h1>
+                <p style="font-size: 20px;">"มาเรียนรู้วิธีดูแลบ้านให้วิบวับ แล้วไปตะลุยด่านในเกมกันเลย!"</p>
+                <div class="hero-btns">
+                    <a href="index2.html" class="btn-main">🚀 เริ่มภารกิจเลย!</a>
+                    <a href="#categories" class="btn-sub">💡 เก็บเคล็ดลับวิชา</a>
+                </div>
+            </div>
+
+            <div class="hero-character">
+                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Mascot" class="animated-bot">
+            </div>
+
+            <div class="hero-img">
+                <img src="logo.png" alt="Banner"> 
+            </div>
+        </div>
+    </header>
+
+    <section class="category-section" id="categories">
+        <h2 style="font-size: 32px;">เลือกภารกิจที่หนูอยากรู้ได้เลย!</h2>
+        <p style="font-size: 22px; color: #666;">🌟 เริ่มจากข้อ 1 จะทำให้หนูเก่งไวขึ้นนะ!</p>
+        
+        <div class="category-grid">
+            <div class="cat-item" id="cat-1" onclick="showContent(1)">
+                <span style="font-size:40px;">✅ </span><br>
+                <b>1.การใช้งานคอมพิวเตอร์<br>อย่างถูกต้อง</b>
+            </div>
+            <div class="cat-item" id="cat-2" onclick="showContent(2)">
+                <span style="font-size:40px;">🧹</span><br>
+                <b>2.การทำความสะอาดอุปกรณ์คอมพิวเตอร์</b>
+            </div>
+            <div class="cat-item" id="cat-3" onclick="showContent(3)">
+                <span style="font-size:40px;">💾 </span><br>
+                <b>3.การดูแลซอฟต์แวร์ (โปรแกรม)</b>
+            </div>
+            <div class="cat-item" id="cat-4" onclick="showContent(4)">
+                <span style="font-size:40px;">⚡</span><br>
+                <b>4.การป้องกันอันตราย<br>จากไฟฟ้า</b>
+            </div>
+            <div class="cat-item" id="cat-5" onclick="showContent(5)">
+                <span style="font-size:40px;">👦👧</span><br>
+                <b>5.การใช้งานอย่างมีความ<br>รับผิดชอบ</b>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-display-section" id="content-display">
+        
+        <div id="placeholder-text">
+            <h3 style="font-size: 24px;">👆 จิ้มที่กล่องด้านบน เพื่อเริ่มเรียนรู้ได้เลย!</h3>
+        </div>
+
+        <div class="content-panel" id="content-1">
+            <div class="content-number">1</div> <h2>การทำความสะอาดอุปกรณ์คอมพิวเตอร์</h2>
+            <ul class="content-list">
+                <li><span class="content-icon">🧹</span><div><b>การรักษาความสะอาด</b> เป็นหัวใจสำคัญที่ช่วยให้คอมพิวเตอร์ดูใหม่และทำงานได้เต็มประสิทธิภาพ</div></li>
+                <li><span class="content-icon">🖥️</span><div><b>หน้าจอ:</b> ควรใช้ <b>ผ้านุ่มและสะอาด</b> (เช่น ผ้าไมโครไฟเบอร์) เช็ดเบาๆ ไม่ควรใช้ผ้าเนื้อหยาบหรือกระดาษทรายเพราะจะทำให้หน้าจอเป็นรอย</div></li>
+                <li><span class="content-icon">❌💧</span><div><b>ข้อควรระวัง:</b> ห้ามใช้ผ้าที่เปียกชุ่มน้ำจนเกินไป เพราะน้ำอาจไหลซึมเข้าสู่ภายในเครื่องทำให้วงจรเสียหายได้</div></li>
+            </ul>
+            <div class="navigation-controls">
+                <span></span> <button class="btn-next" onclick="showContent(2)">บทต่อไป ⚡</button>
+            </div>
+        </div>
+
+        <div class="content-panel" id="content-2">
+            <div class="content-number">2</div> <h2>ขั้นตอนความปลอดภัยก่อนและหลังใช้งาน</h2>
+            <ul class="content-list">
+                <li><span class="content-icon">🔌</span><div><b>ก่อนทำความสะอาด:</b> ต้อง <b>ปิดเครื่องและถอดปลั๊กไฟออกเสมอ</b> เพื่อป้องกันไฟฟ้าลัดวงจรหรือไฟดูด</div></li>
+                <li><span class="content-icon">🛑</span><div><b>การปิดเครื่อง (Shut Down):</b> ควรปิดตามขั้นตอนของระบบปฏิบัติการ ไม่ควรดึงปลั๊กออกทันที เพราะอาจทำให้ระบบซอฟต์แวร์และฮาร์ดดิสก์เสียหาย</div></li>
+                <li><span class="content-icon">🖐️✨</span><div><b>ร่างกายผู้ใช้:</b> หากมือเปียกน้ำ <b>ต้องเช็ดมือให้แห้งสนิท</b> ก่อนสัมผัสอุปกรณ์คอมพิวเตอร์</div></li>
+            </ul>
+            <div class="navigation-controls">
+                <button class="btn-prev" onclick="showContent(1)">⬅️ ย้อนกลับ</button>
+                <button class="btn-next" onclick="showContent(3)">บทต่อไป ⚡</button>
+            </div>
+        </div>
+
+        <div class="content-panel" id="content-3">
+            <div class="content-number">3</div> <h2>การเลือกสถานที่จัดวางและการระบายความร้อน</h2>
+            <ul class="content-list">
+                <li><span class="content-icon">🏠</span><div><b>สถานที่วาง:</b> ควรวางในที่ <b>แห้งและมีอากาศถ่ายเทสะดวก</b> หลีกเลี่ยงบริเวณที่มีความชื้นสูง มีน้ำขัง หรือโดนแสงแดดจัดโดยตรง</div></li>
+                <li><span class="content-icon">🌡️</span><div><b>การระบายความร้อน:</b> เมื่อคอมพิวเตอร์ร้อนมาก <b>ควรปิดพักเครื่อง</b> เพื่อลดอุณหภูมิ ไม่ควรใช้ผ้าหนาๆ ไปคลุมเครื่องขณะใช้งานเพราะจะขวางทางระบายอากาศ</div></li>
+            </ul>
+            <div class="navigation-controls">
+                <button class="btn-prev" onclick="showContent(2)">⬅️ ย้อนกลับ</button>
+                <button class="btn-next" onclick="showContent(4)">บทต่อไป ⚡</button>
+            </div>
+        </div>
+
+        <div class="content-panel" id="content-4">
+            <div class="content-number">4</div> <h2>สุขลักษณะและระเบียบวินัยในการใช้งาน</h2>
+            <ul class="content-list">
+                <li><span class="content-icon">❌🍕</span><div><b>งดการรับประทานอาหาร:</b> ไม่ควรนำอาหารหรือเครื่องดื่มมาไว้ใกล้คอมพิวเตอร์ เพราะ <b>เศษอาหารอาจตกหล่น</b> ใส่คีย์บอร์ด หรือน้ำอาจหกใส่เครื่องจนพัง</div></li>
+                <li><span class="content-icon">🔌</span><div><b>การจัดการสายไฟ:</b> ควรจัดเก็บสายไฟให้เป็นระเบียบ ไม่ปล่อยให้พันกัน เพื่อความสวยงามและ <b>ป้องกันการเดินสะดุด</b></div></li>
+            </ul>
+            <div class="navigation-controls">
+                <button class="btn-prev" onclick="showContent(3)">⬅️ ย้อนกลับ</button>
+                <button class="btn-next" onclick="showContent(5)">บทต่อไป ⚡</button>
+            </div>
+        </div>
+
+        <div class="content-panel" id="content-5">
+            <div class="content-number">5</div> <h2>การบำรุงรักษาซอฟต์แวร์และความปลอดภัย</h2>
+            <ul class="content-list">
+                <li><span class="content-icon">🛡️</span><div><b>การสแกนไวรัส:</b> ช่วยตรวจจับและ <b>ป้องกันไวรัส</b> ที่อาจเข้ามาขโมยข้อมูลหรือทำลายระบบภายในเครื่อง</div></li>
+                <li><span class="content-icon">🆙</span><div><b>การอัปเดตโปรแกรม:</b> การอัปเดตซอฟต์แวร์สม่ำเสมอจะช่วย <b>เพิ่มความปลอดภัย</b> และซ่อมแซมจุดบกพร่องของโปรแกรม</div></li>
+            </ul>
+            <div class="navigation-controls">
+                <button class="btn-prev" onclick="showContent(4)">⬅️ ย้อนกลับ</button>
+                <a href="index2.html" class="btn-next" style="text-decoration: none;">เข้าสู่เกมกันเลย! 🎮</a>
+            </div>
+        </div>
+
+    </section>
+
+<script>
+    function showContent(index) {
+        const placeholder = document.getElementById('placeholder-text');
+        if(placeholder) placeholder.style.display = 'none';
+
+        const contentPanels = document.querySelectorAll('.content-panel');
+        contentPanels.forEach(panel => panel.classList.remove('active'));
+        
+        const catItems = document.querySelectorAll('.cat-item');
+        catItems.forEach(item => item.classList.remove('active'));
+
+        const selectedContent = document.getElementById('content-' + index);
+        if (selectedContent) {
+            selectedContent.classList.add('active');
+        }
+
+        const selectedCatItem = document.getElementById('cat-' + index);
+        if (selectedCatItem) {
+            selectedCatItem.classList.add('active');
+        }
+
+        // --- ส่วนที่เพิ่ม: เลื่อนหน้าจอไปที่ส่วนเนื้อหาโดยอัตโนมัติ (Offset เล็กน้อยเพื่อให้หัวข้อไม่ติดขอบบน) ---
+        const targetElement = document.getElementById('content-display');
+        const offset = 20; 
+        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+</script>
+    <script src="footer.js"></script>
+</body>
+</html>

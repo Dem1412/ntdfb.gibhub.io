@@ -1,0 +1,111 @@
+<!DOCTYPE html> 
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมZEQ QUIZ</title>
+    <style>
+        @font-face { 
+            font-family: 'FC Active'; 
+            src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype'); 
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'FC Active', sans-serif !important; 
+        }
+        
+        body { 
+            background-color: #f8f9fa; /* เปลี่ยนจากขาวล้วนเป็นเทาอ่อนๆ ให้ดูนุ่มตา */
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh;
+        }
+        
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            padding: 40px 20px; 
+            background: radial-gradient(circle at center, #ffffff 0%, #f1f1f1 100%); /* เพิ่มมิติให้พื้นหลัง */
+        }
+        
+        .game-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 { 
+            font-size: clamp(28px, 5vw, 40px); /* ปรับขนาดตามหน้าจออัตโนมัติ */
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .subtitle { 
+            font-size: clamp(18px, 3vw, 22px); 
+            color: #666; 
+            margin-bottom: 30px;
+        }
+        
+        .btn-download { 
+            display: inline-block;
+            background: #28a745; 
+            color: white; 
+            padding: 18px 45px; 
+            font-size: 24px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-download:hover { 
+            background: #218838; 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+        
+        /* สำหรับมือถือ */
+        @media (max-width: 480px) {
+            .game-card { padding: 30px 20px; }
+            .facebook-section { font-size: 14px; padding: 8px 15px; }
+        }
+    </style>
+    <script src="navbar.js"></script> 
+</head>
+<body>
+
+<div class="main-content">
+    <div class="game-card">
+        <h1>"ประลองฝีมือ... เซียนเช็ด ปัด จัด ใช้ ให้ถูกวิธี!" 🏆</h1>
+        <p class="subtitle">"มาโชว์ฝีมือกันหน่อย! ใครจะเป็นสุดยอด<br>นักทำความสะอาดกันนะ?"</p>
+        
+        <a href="https://quiz.zep.us/en/join" class="btn-download" target="_blank">
+            "ไปลุยภารกิจกันเลย!"
+        </a>
+
+        <div style="margin-top: 20px; font-size: 14px; color: #999;">
+            "🌟 แนะนำให้ใช้ Google Chrome จะไหลลื่นที่สุดนะจ๊ะ!"
+        </div>
+    </div>
+</div>
+
+    <script src="footer.js"></script>
+
+</body>
+</html>

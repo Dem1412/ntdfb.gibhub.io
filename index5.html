@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผู้พัฒนาเว็ปไซต์เพื่อการศึกษา เรื่อง เช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    <style>
+        @font-face { font-family: 'FC Active'; src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype'); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'FC Active', sans-serif !important; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: white; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 0 15px; /* กันเนื้อหาชิดขอบจอเกินไปในมือถือ */
+        }
+
+        .title { 
+            text-align: center; 
+            font-size: 48px; 
+            margin: 40px 0; 
+            font-weight: bold; 
+        }
+
+        /* Desktop Layout */
+        .image-grid { 
+            width: 95%; 
+            max-width: 2000px;
+            margin: auto; 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 20px; 
+            padding-bottom: 60px; 
+        }
+
+        .image-box { 
+            position: relative; 
+            overflow: hidden; 
+            border-radius: 15px; 
+            border: none; /* เอาเส้นขอบออกถาวร */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            cursor: pointer;
+        }
+
+        /* ตอน Hover หรือกด จะไม่มีกรอบโผล่มา */
+        .image-box:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* ใช้เงาแทนกรอบเพื่อให้ดูนูนออกมา */
+            border: none;
+            outline: none;
+        }
+
+        .image-normal, .image-hover { 
+            width: 100%; 
+            display: block; 
+            transition: opacity 0.4s ease; 
+        }
+
+        .image-hover { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            opacity: 0; 
+        }
+
+        .image-box:hover .image-hover { opacity: 1; }
+        .image-box:hover .image-normal { opacity: 0; }
+
+        /* --- ปรับแต่ง Layout สำหรับโทรศัพท์และแท็บเล็ต --- */
+        @media (max-width: 1024px) {
+            .image-grid { grid-template-columns: repeat(3, 1fr); } /* แท็บเล็ต 3 คอลัมน์ */
+        }
+
+        @media (max-width: 600px) {
+            .title { font-size: 36px; margin: 30px 0; }
+            .image-grid { 
+                grid-template-columns: repeat(2, 1fr); /* มือถือ 2 คอลัมน์เพื่อให้เห็นรูปชัด */
+                gap: 12px;
+                width: 100%;
+            }
+            .footer-logo { width: 100px; }
+            .facebook-section { font-size: 14px; padding: 8px 15px; }
+        }
+
+        @media (max-width: 400px) {
+            .image-grid { grid-template-columns: 1fr; width: 80%; } /* มือถือจอเล็กมาก ให้เรียงเดี่ยว */
+        }
+
+    </style>
+    <script src="navbar.js"></script>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="title">ผู้พัฒนา</div>
+        <div class="image-grid">
+            <div class="image-box">
+                <img class="image-normal" src="https://img5.pic.in.th/file/secure-sv1/142f5c2c317912c5e.png">
+                <img class="image-hover" src="https://img2.pic.in.th/256ecdcf157093627.png">
+            </div>
+            <div class="image-box">
+                <img class="image-normal" src="https://img5.pic.in.th/file/secure-sv1/173c3fff5c994c73e.png">
+                <img class="image-hover" src="https://img5.pic.in.th/file/secure-sv1/2a9e18e38b5d97408.png">
+            </div>
+            <div class="image-box">
+                <img class="image-normal" src="https://img5.pic.in.th/file/secure-sv1/15a29881eee4aa4df.png">
+                <img class="image-hover" src="https://img5.pic.in.th/file/secure-sv1/2d5581609506d06af.png">
+            </div>
+            <div class="image-box">
+                <img class="image-normal" src="https://img2.pic.in.th/15951ce123e7cb74e.png">
+                <img class="image-hover" src="https://img2.pic.in.th/2bcd91fd123be9dae.png">
+            </div>
+            <div class="image-box">
+                <img class="image-normal" src="https://img2.pic.in.th/1a905600bb3a9227d.png">
+                <img class="image-hover" src="https://img5.pic.in.th/file/secure-sv1/2a924d53da57424c3.png">
+            </div>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+</body>
+</html>

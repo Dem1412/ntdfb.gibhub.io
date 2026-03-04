@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบทดสอบหลังเรียน - เรื่อง เช็ด ปัด จัด ใช้ ให้ถูกวิธี</title>
+    <style>
+        @font-face {
+            font-family: 'FC Active';
+            src: url('https://cdn.jsdelivr.net/gh/wasantiseeno/font@main/FCActive-Regular.ttf') format('truetype');
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'FC Active', sans-serif !important; }
+        body { background-color: #f0f7ff; color: #333; scroll-behavior: smooth; }
+        
+        /* --- [ส่วนที่แก้ไข: Progress Bar ด้านข้าง] --- */
+        .progress-wrapper {
+            position: fixed;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 300px; /* ความสูงของแถบ */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            z-index: 9999;
+            border: 2px solid #fff;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse; /* ให้สีวิ่งจากล่างขึ้นบน */
+        }
+        .progress-bar {
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(180deg, #00d4ff, #007bff);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+            transition: height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50px;
+        }
+        /* ตัวเลขเปอร์เซ็นต์ข้างๆ แถบ */
+        .progress-label {
+            position: fixed;
+            right: 20px;
+            top: calc(50% + 165px);
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ส่วนหัว */
+        .hero { padding: 60px 5%; background: #fff; text-align: center; border-bottom: 5px solid #007bff; }
+        .hero h1 { font-size: 50px; margin-bottom: 10px; color: #0056b3; }
+        .highlight { color: #FFD200; text-shadow: 1px 1px 1px #000; }
+        .hero p { font-size: 24px; color: #666; margin-bottom: 30px; }
+
+        /* ส่วนกรอกชื่อ */
+        .quiz-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .quiz-card { background: #fff; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 2px solid #007bff; }
+        
+        .info-box { background: #eef6ff; padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #cce5ff; }
+        .info-box label { display: block; font-size: 20px; margin-bottom: 8px; font-weight: bold; color: #0056b3; }
+        .info-box input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #bcdbff; font-size: 18px; margin-bottom: 10px; outline: none; }
+
+        /* ข้อสอบ */
+        .quiz-item { margin-bottom: 35px; padding-bottom: 25px; border-bottom: 1px dashed #ddd; }
+        .quiz-question { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; gap: 10px; }
+        .q-num { background: #007bff; color: white; min-width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 20px; }
+        
+        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+        .option { 
+            background: #fff; border: 2px solid #eee; padding: 16px 20px; 
+            border-radius: 15px; cursor: pointer; transition: 0.2s; font-size: 20px; 
+        }
+        .option:hover { background: #f0f7ff; border-color: #007bff; }
+        .option.selected { background: #007bff; border-color: #0056b3; color: white; font-weight: bold; }
+        
+        .option.correct { background: #28a745 !important; border-color: #1e7e34 !important; color: white !important; }
+        .option.wrong { background: #dc3545 !important; border-color: #bd2130 !important; color: white !important; }
+
+        .btn-submit { 
+            background: #007bff; color: white; width: 100%; padding: 20px; 
+            border-radius: 50px; border: none; font-size: 26px; cursor: pointer; 
+            font-weight: bold; margin-top: 20px; transition: 0.3s;
+        }
+        .btn-submit:hover {
+            background: #1481f5;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .result-box { display: none; margin-top: 30px; padding: 40px; border-radius: 20px; text-align: center; border: 3px solid #28a745; background: #f0fff4; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .score-display { font-size: 60px; color: #28a745; font-weight: bold; margin: 15px 0; }
+
+        .screenshot-guide {
+            background: #fff3cd; color: #856404; padding: 15px; border-radius: 10px; margin: 20px 0; font-size: 18px; border: 1px solid #ffeeba;
+        }
+        .btn-lesson {
+            background: #28a745; color: white; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-size: 24px; font-weight: bold; display: inline-block; margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .btn-lesson:hover { background: #218838; transform: scale(1.05); }
+
+    </style>
+    <script src="navbar.js"></script>
+</head>
+<body>
+
+    <div class="progress-wrapper">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+    <div class="progress-label" id="progLabel">0%</div>
+
+    <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+    <audio id="cheerSound" src="https://www.myinstants.com/media/sounds/kids_cheering.mp3"></audio>
+
+    <section class="hero">
+        <h1>แบบทดสอบ <span class="highlight">หลังเรียน</span></h1>
+        <p>เรื่อง การดูแลรักษาคอมพิวเตอร์ (เช็ด ปัด จัด ใช้ ให้ถูกวิธี)</p>
+    </section>
+
+    <div class="quiz-container">
+        <div class="quiz-card">
+            
+            <div class="info-box" id="input-section">
+                <label>ชื่อ-นามสกุล:</label>
+                <input type="text" id="student-name" placeholder="กรอกชื่อของคุณ">
+                <label>เลขที่:</label>
+                <input type="number" id="student-no" placeholder="กรอกเลขที่">
+            </div>
+
+            <div class="quiz-item" data-answer="3">
+                <p class="quiz-question"><span class="q-num">1</span> การทำความสะอาดหน้าจอคอมพิวเตอร์ควรใช้อะไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ผ้าหยาบ</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ผ้าเปียกน้ำมาก ๆ</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ผ้านุ่มสะอาด</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. กระดาษทราย</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="3">
+                <p class="quiz-question"><span class="q-num">2</span> ก่อนทำความสะอาดคอมพิวเตอร์ควรทำอย่างไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. เปิดเครื่องทิ้งไว้</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ผ้าเปียกน้ำมาก ๆ</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ปิดเครื่องและถอดปลั๊ก</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. เขย่าเครื่องแรง ๆ</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="3">
+                <p class="quiz-question"><span class="q-num">3</span> การวางคอมพิวเตอร์ควรวางในที่แบบใด?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ที่อับชื้น</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ที่มีน้ำขัง</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ที่แห้งและอากาศถ่ายเท</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. กลางแดดจัด</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="2">
+                <p class="quiz-question"><span class="q-num">4</span> ควรทำอย่างไรเมื่อมือเปียกน้ำ?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ใช้คอมทันที</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. เช็ดมือให้แห้งก่อน</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. เทน้ำเพิ่ม</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. จับสายไฟเล่น</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="3">
+                <p class="quiz-question"><span class="q-num">5</span> การสแกนไวรัสช่วยอะไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ทำให้เครื่องพัง</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ลบไฟล์ทั้งหมด</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ป้องกันไวรัสในเครื่อง</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. ทำให้จอแตก</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="1">
+                <p class="quiz-question"><span class="q-num">6</span> ถ้าคอมพิวเตอร์ร้อนมากควรทำอย่างไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ปิดพักเครื่อง</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ใช้ต่อไปเรื่อย ๆ</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. วางผ้าคลุม</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. เอาไปตากแดด</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="1">
+                <p class="quiz-question"><span class="q-num">7</span> การอัปเดตโปรแกรมมีประโยชน์อย่างไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. เพิ่มความปลอดภัย</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ทำให้ช้าลงเสมอ</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ลบข้อมูลทั้งหมด</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. ทำให้เครื่องร้อน</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="2">
+                <p class="quiz-question"><span class="q-num">8</span> ไม่ควรกินอาหารใกล้คอมพิวเตอร์เพราะอะไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. กลัวหิว</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. เศษอาหารอาจตกใส่เครื่อง</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. เครื่องจะหนี</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. จอจะมืด</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="2">
+                <p class="quiz-question"><span class="q-num">9</span> ควรปิดเครื่องอย่างไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ดึงปลั๊กทันที</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. กดปิดเครื่องตามขั้นตอน</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. เขย่าเครื่อง</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. ตบคีย์บอร์ด</div>
+                </div>
+            </div>
+
+            <div class="quiz-item" data-answer="1">
+                <p class="quiz-question"><span class="q-num">10</span> การจัดสายไฟให้เรียบร้อยช่วยอะไร?</p>
+                <div class="quiz-options">
+                    <div class="option" onclick="selectOption(this, 1)">ก. ทำให้สวยงามและปลอดภัย</div>
+                    <div class="option" onclick="selectOption(this, 2)">ข. ทำให้สะดุดล้มง่าย</div>
+                    <div class="option" onclick="selectOption(this, 3)">ค. ทำให้ไฟดับ</div>
+                    <div class="option" onclick="selectOption(this, 4)">ง. ทำให้เครื่องพัง</div>
+                </div>
+            </div>
+
+            <button class="btn-submit" id="submit-btn" onclick="submitQuiz()">ส่งคำตอบและดูคะแนน ✨</button>
+
+            <div id="result-display" class="result-box">
+                <h2 id="res-name" style="font-size:30px; color:#333;"></h2>
+                <p style="font-size:20px; margin-top:10px;">คุณทำคะแนนหลังเรียนได้ทั้งหมด</p>
+                <div class="score-display" id="res-score">0 / 10</div>
+                <div class="screenshot-guide">
+                    📸 <b>"แคปภาพหน้าจอนี้ส่งให้คุณครูในแชทกลุ่มด้วยนะจ๊ะ"</b> <br>เพื่อดูว่าหลังเราเรียนจะได้คะแนนเท่าไหร่
+                </div>
+                <a href="index.html" class="btn-lesson">🚀 กลับเข้าสู่บทเรียน</a>
+                <br><br>
+                <button onclick="window.location.reload()" style="padding:10px 20px; cursor:pointer; border-radius:10px; border:none; background:#6c757d; color:white;">ทำใหม่อีกครั้ง</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isSubmitted = false;
+
+        function selectOption(element, value) {
+            if (isSubmitted) return; 
+            document.getElementById('clickSound').play(); 
+            const quizItem = element.closest('.quiz-item');
+            quizItem.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            quizItem.setAttribute('data-user-choice', value);
+            updateProgressBar();
+        }
+
+        // [แก้ไขฟังก์ชันนี้]
+        function updateProgressBar() {
+            const total = document.querySelectorAll('.quiz-item').length;
+            const answered = document.querySelectorAll('.quiz-item[data-user-choice]').length;
+            const percentage = Math.round((answered / total) * 100);
+            document.getElementById('myBar').style.height = percentage + '%';
+            document.getElementById('progLabel').innerText = percentage + '%';
+        }
+
+        function submitQuiz() {
+            const name = document.getElementById('student-name').value;
+            const no = document.getElementById('student-no').value;
+            const quizItems = document.querySelectorAll('.quiz-item');
+            let score = 0;
+            let answered = 0;
+
+            if (!name || !no) {
+                alert("กรุณากรอกชื่อและเลขที่ก่อนส่งนะครับ!");
+                return;
+            }
+
+            quizItems.forEach((item) => {
+                if (item.getAttribute('data-user-choice')) answered++;
+            });
+
+            if (answered < quizItems.length) {
+                alert("ทำข้อสอบให้ครบทุกข้อก่อนส่งนะครับ");
+                return;
+            }
+
+            isSubmitted = true;
+            document.getElementById('cheerSound').play();
+
+            quizItems.forEach((item) => {
+                const selected = item.getAttribute('data-user-choice');
+                const correct = item.getAttribute('data-answer');
+                const options = item.querySelectorAll('.option');
+
+                options.forEach((opt, index) => {
+                    const currentVal = (index + 1).toString();
+                    opt.classList.remove('selected'); 
+
+                    if (currentVal === correct) {
+                        opt.classList.add('correct'); 
+                    } else if (currentVal === selected && selected !== correct) {
+                        opt.classList.add('wrong'); 
+                    }
+                });
+
+                if (selected === correct) score++;
+            });
+
+            document.getElementById('res-name').innerText = "ยินดีด้วย! " + name + " (เลขที่ " + no + ")";
+            document.getElementById('res-score').innerText = score + " / " + quizItems.length;
+            
+            document.getElementById('result-display').style.display = 'block';
+            document.getElementById('submit-btn').style.display = 'none'; 
+            document.getElementById('input-section').style.opacity = '0.5'; 
+            
+            document.getElementById('result-display').scrollIntoView({ behavior: 'smooth' });
+            
+            // ซ่อนแถบเมื่อส่งแล้ว
+            document.querySelector('.progress-wrapper').style.display = 'none';
+            document.querySelector('.progress-label').style.display = 'none';
+        }
+    </script>
+    <script src="footer.js"></script>
+</body>
+</html>
